@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Sibi's Career Roadmap</title>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX compilation in browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Geist+Mono:wght@100..900&family=Switzer:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1C1B1A",
+                        background: "#F4F3EF",
+                        surface: "#FFFFFF",
+                        text: "#2D2C2A",
+                        muted: "#9E9C98",
+                        accent: "#DA4126",
+                    },
+                    fontFamily: {
+                        heading: ['Fraunces', 'serif'],
+                        body: ['Switzer', 'sans-serif'],
+                        mono: ['Geist Mono', 'monospace'],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0px",
+                        none: "0px",
+                        sm: "0px",
+                        md: "0px",
+                        lg: "0px",
+                        xl: "0px",
+                        "2xl": "0px",
+                        "3xl": "0px",
+                        full: "0px",
+                    },
+                    boxShadow: {
+                        brutal: "4px 4px 0px 0px var(--tw-shadow-color)",
+                        "brutal-hover": "6px 6px 0px 0px var(--tw-shadow-color)",
+                    },
+                    transitionProperty: {
+                        'shadow-transform': 'box-shadow, transform',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.text');
+            font-family: theme('fontFamily.body');
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .shadow-color-primary {
+            --tw-shadow-color: theme('colors.primary');
+        }
+
+        /* Custom Scrollbar for columns */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: theme('colors.background');
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: theme('colors.muted');
+            border: 1px solid theme('colors.primary');
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.primary');
+        }
+    </style>
+</head>
+<body class="flex min-h-screen overflow-hidden">
+    <!-- Root container for React app -->
+    <div id="root" class="flex w-full h-screen"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const tracks = [
+            {
+                id: 'ai-product',
+                icon: 'robot_2',
+                title: 'AI Product / AI Specialist',
+                description: 'Specialized PM track focused on LLM-powered features, AI workflows, evals, and agentic systems. Demand currently outstrips supply, and non-traditional backgrounds are still being hired here.',
+                timeline: [
+                    {
+                        period: 'Weeks 1–2',
+                        title: 'Foundation & Tooling',
+                        content: 'Anthropic + OpenAI API docs cover-to-cover. Build a working AI tool (anything — a doc summarizer, a meeting-notes-to-tasks converter, a code-review assistant). Ship it publicly.',
+                        tags: ['APIs', 'LLMs', 'Building']
+                    },
+                    {
+                        period: 'Weeks 3–6',
+                        title: 'Theory & Perspectives',
+                        content: 'Read Lenny Rachitsky\'s AI-PM archive, Aakash Gupta\'s PM articles, watch every Latent Space podcast episode. Write 2 LinkedIn posts on AI product decisions.',
+                        tags: ['Product Sense', 'Writing']
+                    },
+                    {
+                        period: 'Weeks 7–10',
+                        title: 'Advanced Project',
+                        content: 'Build a second, more sophisticated AI project — ideally with evals, multi-step agents, or a real customer. Publish a write-up of what you learned.',
+                        tags: ['Agents', 'Evals', 'Shipping']
+                    },
+                    {
+                        period: 'Weeks 11–13',
+                        title: 'Apply & Interview',
+                        content: 'Apply. By this point you have: 2 shipped projects, 8+ thoughtful LinkedIn posts, an articulated point of view on AI product. You\'re applying as a credible AI-product candidate.',
+                        tags: ['Applications', 'Interviews']
+                    }
+                ]
+            },
+            {
+                id: 'product-analyst',
+                icon: 'analytics',
+                title: 'Product Analyst → PM',
+                description: 'SQL + a BI tool + product sense. Less glamorous than PM, but conversion to PM after 1–2 years is high. Lowest runway risk on this list.',
+                timeline: [
+                    {
+                        period: 'Weeks 1–4',
+                        title: 'SQL Mastery',
+                        content: 'Master SQL. SQLZoo, Mode SQL Tutorial, then a dataset (Kaggle). Aim for "I can pull and analyze my own data without help."',
+                        tags: ['SQL', 'Data', 'Kaggle']
+                    },
+                    {
+                        period: 'Weeks 5–8',
+                        title: 'BI & Dashboards',
+                        content: 'Pick one BI tool (Metabase, Looker Studio, or Tableau Public). Build 3 dashboards on real-ish data. Publish them.',
+                        tags: ['Metabase', 'Tableau', 'Visualization']
+                    },
+                    {
+                        period: 'Weeks 9–11',
+                        title: 'Experimentation Frameworks',
+                        content: 'Read Trustworthy Online Controlled Experiments (Kohavi), study Amplitude\'s product analytics resources, learn one A/B testing framework deeply.',
+                        tags: ['A/B Testing', 'Analytics']
+                    },
+                    {
+                        period: 'Weeks 12–13',
+                        title: 'Apply & Interview',
+                        content: 'Apply. Resume now reads "ex-Rocketlane Support Specialist with X portfolio of analyses." That\'s a strong product-analyst story.',
+                        tags: ['Applications', 'Interviews']
+                    }
+                ]
+            },
+            {
+                id: 'product-engineer',
+                icon: 'code_blocks',
+                title: 'Product Engineer',
+                description: 'The hardest, highest-payoff track. Product engineer is the new label for engineers who think in product, ship fast, and own outcomes.',
+                timeline: [
+                    {
+                        period: 'Weeks 1–4',
+                        title: 'Frontend Ramp',
+                        content: 'Modern frontend ramp — React, TypeScript, Tailwind, Next.js. Use Frontend Masters or full-stack-open.com.',
+                        tags: ['React', 'TypeScript', 'Tailwind']
+                    },
+                    {
+                        period: 'Weeks 5–8',
+                        title: 'Portfolio Project V1',
+                        content: 'Build the cafe billing system as a polished, deployed, public Next.js app. Real database (Supabase or Neon), real auth, real payment flow, real customer.',
+                        tags: ['Next.js', 'Supabase', 'Shipping']
+                    },
+                    {
+                        period: 'Weeks 9–11',
+                        title: 'Breadth & Complexity',
+                        content: 'Build a second project — something API-heavy or AI-augmented. The point is breadth + a public GitHub with shipped, working code.',
+                        tags: ['APIs', 'AI', 'GitHub']
+                    },
+                    {
+                        period: 'Weeks 12–13',
+                        title: 'Apply & Interview',
+                        content: 'Apply. Your portfolio is now your strongest asset.',
+                        tags: ['Applications', 'Interviews']
+                    }
+                ]
+            },
+            {
+                id: 'devrel',
+                icon: 'campaign',
+                title: 'Developer Relations',
+                description: 'Influence product through content, sample apps, docs, and community. Developer-facing through code and content.',
+                timeline: [
+                    {
+                        period: 'Weeks 1–4',
+                        title: 'Tool Specialty',
+                        content: 'Pick one developer tool (Postman, Hasura, Resend, etc.) — your "specialty." Build a sample app with it. Write a tutorial.',
+                        tags: ['Sample Apps', 'Writing', 'DevTools']
+                    },
+                    {
+                        period: 'Weeks 5–8',
+                        title: 'Content & Open Source',
+                        content: 'Two more tutorials, one open-source contribution (even a docs PR), start a personal technical blog.',
+                        tags: ['OSS', 'Blogging', 'Community']
+                    },
+                    {
+                        period: 'Weeks 9–11',
+                        title: 'Networking & Chats',
+                        content: 'Talk to existing DevRel people via LinkedIn — ask for 15-minute chats. Five conversations will teach you more than a month of reading.',
+                        tags: ['Networking', 'Interviews']
+                    },
+                    {
+                        period: 'Weeks 12–13',
+                        title: 'Apply & Interview',
+                        content: 'Apply, with referrals from those five conversations.',
+                        tags: ['Applications', 'Referrals']
+                    }
+                ]
+            }
+        ];
+
+        const App = () => {
+            const [activeView, setActiveView] = useState('path_explorer'); // Default to Path Explorer for testing
+            const [activeTrackId, setActiveTrackId] = useState(tracks[0].id);
+            const activeTrack = tracks.find(t => t.id === activeTrackId);
+
+            return (
+                <div className="flex w-full h-full">
+                    <Sidebar 
+                        activeView={activeView}
+                        setActiveView={setActiveView}
+                        activeTrackId={activeTrackId} 
+                        setActiveTrackId={setActiveTrackId} 
+                    />
+                    {activeView === 'journey' && (
+                        <main className="flex-1 flex overflow-hidden">
+                            <Intro track={activeTrack} />
+                            <Timeline track={activeTrack} />
+                        </main>
+                    )}
+                    {activeView === 'app_hub' && <ApplicationHub />}
+                    {activeView === 'path_explorer' && <PathExplorer setActiveView={setActiveView} setActiveTrackId={setActiveTrackId} />}
+                </div>
+            );
+        };
+
+        const Sidebar = ({ activeView, setActiveView, activeTrackId, setActiveTrackId }) => {
+            return (
+                <div className="relative flex h-full w-64 flex-col bg-background border-r border-primary shrink-0 font-body overflow-y-auto custom-scrollbar">
+                    <div className="flex h-full grow flex-col">
+                        <div className="flex flex-1 justify-center py-5">
+                            <div className="flex flex-col max-w-[960px] flex-1">
+                                <div className="flex h-full flex-col justify-between p-4 min-h-[600px]">
+                                    <div className="flex flex-col gap-8">
+                                        <div className="flex flex-col gap-1">
+                                            <h1 className="text-primary font-heading text-2xl font-semibold leading-normal tracking-[-0.02em]">Sibi's Roadmap</h1>
+                                            <p className="text-muted font-mono text-[13px] uppercase tracking-[0.05em] font-medium leading-normal">Digital Portfolio</p>
+                                        </div>
+                                        
+                                        <div className="flex flex-col gap-2">
+                                            <button onClick={() => setActiveView('journey')} className={`flex items-center gap-3 px-3 py-2 text-left transition-colors border ${activeView === 'journey' ? 'bg-primary text-surface border-primary' : 'text-text border-transparent hover:border-primary'}`}>
+                                                <span className="material-symbols-outlined text-[20px]" style={activeView === 'journey' ? {fontVariationSettings: "'FILL' 1"} : {}}>map</span>
+                                                <span className="font-mono text-sm font-medium leading-normal tracking-tight">The Journey</span>
+                                            </button>
+                                            
+                                            {activeView === 'journey' && (
+                                                <div className="flex flex-col gap-1 ml-6 mt-1 mb-2 border-l border-primary pl-2">
+                                                    {tracks.map(track => (
+                                                        <button 
+                                                            key={track.id}
+                                                            onClick={() => setActiveTrackId(track.id)}
+                                                            className={`text-left font-mono text-xs py-1.5 px-2 transition-colors ${activeTrackId === track.id ? 'text-accent font-bold' : 'text-text hover:text-accent'}`}
+                                                        >
+                                                            {track.title}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            <button onClick={() => setActiveView('app_hub')} className={`flex items-center gap-3 px-3 py-2 text-left transition-colors border ${activeView === 'app_hub' ? 'bg-primary text-surface border-primary' : 'text-text border-transparent hover:border-primary'}`}>
+                                                <span className="material-symbols-outlined text-[20px]" style={activeView === 'app_hub' ? {fontVariationSettings: "'FILL' 1"} : {}}>work</span>
+                                                <span className="font-mono text-sm font-medium leading-normal tracking-tight">Application Hub</span>
+                                            </button>
+                                            
+                                            <button onClick={() => setActiveView('path_explorer')} className={`flex items-center gap-3 px-3 py-2 text-left transition-colors border ${activeView === 'path_explorer' ? 'bg-primary text-surface border-primary' : 'text-text border-transparent hover:border-primary'}`}>
+                                                <span className="material-symbols-outlined text-[20px]" style={activeView === 'path_explorer' ? {fontVariationSettings: "'FILL' 1"} : {}}>explore</span>
+                                                <span className="font-mono text-sm font-medium leading-normal tracking-tight">Path Explorer</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-4 border-t border-primary pt-6 mt-6">
+                                        <a className="flex items-center gap-3 px-3 py-2 text-text border border-transparent hover:border-primary transition-colors" href="#">
+                                            <span className="material-symbols-outlined text-[20px]">checklist</span>
+                                            <span className="font-mono text-sm font-medium leading-normal tracking-tight">Pre-flight Checklist</span>
+                                        </a>
+                                        <a className="flex items-center gap-3 px-3 py-2 text-text border border-transparent hover:border-primary transition-colors" href="#">
+                                            <span className="material-symbols-outlined text-[20px]">mail</span>
+                                            <span className="font-mono text-sm font-medium leading-normal tracking-tight">Reach Out</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Intro = ({ track }) => {
+            return (
+                <section className="w-2/5 p-16 flex flex-col h-full overflow-y-auto custom-scrollbar bg-background border-r border-primary">
+                    <div className="max-w-md my-auto flex flex-col gap-8">
+                        <div>
+                            <h2 className="font-heading text-[48px] leading-[1.1] font-semibold text-primary tracking-[-0.02em] mb-4">
+                                90-day learning roadmap
+                            </h2>
+                            <h3 className="font-mono text-[16px] text-accent font-semibold mb-4 uppercase tracking-[0.05em]">{track.title}</h3>
+                            <p className="font-body text-text text-[16px] leading-[1.5] mb-6">
+                                {track.description}
+                            </p>
+                            <p className="font-body text-text text-[16px] leading-[1.5]">
+                                Focus on this single track for 90 days. Don't multi-thread. Run the weekly action plan against this path to maximize signal.
+                            </p>
+                        </div>
+                        <div className="flex flex-col gap-4 mt-8 border-t border-primary pt-8">
+                            <h3 className="font-mono text-[13px] uppercase tracking-[0.05em] text-muted mb-2">Weekly Cadence</h3>
+                            <ul className="font-mono text-[14px] text-primary flex flex-col gap-3">
+                                <li>→ 5 targeted applications</li>
+                                <li>→ 10 alumni outreach messages</li>
+                                <li>→ 1 LinkedIn post</li>
+                                <li className="text-accent font-semibold">→ 8–10 hrs on this track</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const Timeline = ({ track }) => {
+            return (
+                <section className="w-3/5 relative h-full overflow-y-auto custom-scrollbar bg-background p-16">
+                    <div className="absolute top-0 bottom-0 left-[63px] w-[1px] bg-muted z-0"></div>
+                    <div className="relative z-10 flex flex-col gap-16 pb-32 pt-8">
+                        {track.timeline.map((step, index) => (
+                            <div key={index} className="flex gap-12 items-start group/card cursor-pointer">
+                                <div className="relative flex items-center justify-center mt-6 z-10 bg-background py-2">
+                                    <div className={`w-3 h-3 rounded-full transition-colors ${index === 0 ? 'bg-primary group-hover/card:bg-accent' : 'border-2 border-primary bg-background group-hover/card:border-accent'}`}></div>
+                                </div>
+                                <article className="flex-1 bg-surface border border-primary p-6 shadow-brutal shadow-color-primary transition-shadow-transform duration-200 group-hover/card:-translate-y-[2px] group-hover/card:shadow-brutal-hover">
+                                    <div className="flex flex-col gap-4">
+                                        <time className="font-mono text-[13px] uppercase tracking-[0.05em] text-muted font-medium">{step.period}</time>
+                                        <h3 className="font-heading text-[24px] font-semibold text-primary tracking-[-0.02em] leading-tight">{step.title}</h3>
+                                        <p className="font-body text-text text-[16px] leading-[1.5]">
+                                            {step.content}
+                                        </p>
+                                        <div className="mt-4 flex gap-2 flex-wrap">
+                                            {step.tags.map(tag => (
+                                                <span key={tag} className="border border-primary px-2 py-1 font-mono text-[11px] text-primary bg-background">
+                                                    {tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        ))}
+                        
+                        <div className="flex gap-12 items-start">
+                            <div className="relative flex items-center justify-center mt-2 z-10 bg-background py-2">
+                                <div className="w-3 h-3 border-2 border-muted bg-background rounded-full"></div>
+                            </div>
+                            <div className="flex-1 mt-1 text-muted font-mono text-[13px] uppercase tracking-[0.05em]">
+                                Start of 90 Days
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+            );
+        };
+
+        const ApplicationHub = () => {
+            const [applications, setApplications] = useState([
+                { id: '1', company: 'Postman', role: 'Product Specialist', location: 'Bangalore', status: 'Exploring', date: 'Apr 20', icon: 'change_history', tag: 'Drafting' },
+                { id: '2', company: 'Glean', role: 'AI Product Manager', location: 'Remote', status: 'Exploring', date: 'Apr 21', icon: 'commit', tag: 'Researching' },
+                { id: '3', company: 'Atlan', role: 'Product Engineer', location: 'Remote', status: 'Interviewing', date: 'Apr 20', icon: 'payments', tag: 'Onsite Loop' },
+                { id: '4', company: 'Rocketlane', role: 'Support Specialist', location: 'Chennai', status: 'Archived', date: 'Feb 10', icon: 'inventory_2', tag: 'Resigned' },
+            ]);
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [editingApp, setEditingApp] = useState(null);
+
+            const handleDragStart = (e, id) => {
+                e.dataTransfer.setData('appId', id);
+            };
+
+            const handleDrop = (e, status) => {
+                const id = e.dataTransfer.getData('appId');
+                setApplications(apps => apps.map(app => app.id === id ? { ...app, status } : app));
+            };
+
+            const handleDragOver = (e) => {
+                e.preventDefault();
+            };
+
+            const handleDelete = (id) => {
+                setApplications(apps => apps.filter(app => app.id !== id));
+            };
+
+            const handleSave = (app) => {
+                if (app.id) {
+                    setApplications(apps => apps.map(a => a.id === app.id ? app : a));
+                } else {
+                    setApplications(apps => [...apps, { ...app, id: Date.now().toString(), icon: 'work' }]);
+                }
+                setIsModalOpen(false);
+            };
+
+            const columns = [
+                { id: 'Exploring', title: 'Targeting', color: 'primary' },
+                { id: 'Interviewing', title: 'Interviewing', color: 'accent' },
+                { id: 'Archived', title: 'Archived', color: 'primary', isArchived: true }
+            ];
+
+            return (
+                <div className="flex-1 flex flex-col overflow-hidden bg-background">
+                    <header className="h-16 border-b border-primary bg-surface shrink-0 flex items-center justify-between px-6 z-10 sticky top-0">
+                        <div className="flex items-center gap-6">
+                            <h1 className="text-3xl font-heading font-bold tracking-tight text-primary">Application Hub</h1>
+                            <button 
+                                onClick={() => { setEditingApp(null); setIsModalOpen(true); }}
+                                className="bg-primary text-surface px-4 py-1.5 font-mono text-sm shadow-brutal hover:shadow-[6px_6px_0px_0px_var(--tw-shadow-color)] hover:-translate-y-0.5 transition-all shadow-color-primary"
+                            >
+                                + Add App
+                            </button>
+                        </div>
+                        <div className="font-mono text-xs uppercase tracking-widest text-muted flex items-center gap-2">
+                            <span className="material-symbols-outlined text-[16px]">update</span>
+                            {applications.length} total
+                        </div>
+                    </header>
+                    <main className="flex-1 flex overflow-x-auto overflow-y-hidden p-6 gap-8 relative">
+                        {columns.map(col => {
+                            const colApps = applications.filter(a => a.status === col.id);
+                            return (
+                                <div 
+                                    key={col.id} 
+                                    className="flex-none w-[32vw] min-w-[340px] max-w-[450px] flex flex-col h-full"
+                                    onDragOver={handleDragOver}
+                                    onDrop={(e) => handleDrop(e, col.id)}
+                                >
+                                    <div className={`flex items-center justify-between pb-4 mb-4 border-b-2 ${col.isArchived ? 'opacity-70 border-primary' : 'border-primary'} shrink-0`}>
+                                        <h2 className={`text-2xl font-heading font-bold flex items-center gap-2 ${col.color === 'accent' ? 'text-accent' : 'text-primary'}`}>
+                                            {col.title}
+                                        </h2>
+                                        <span className={`font-mono text-sm border px-2 py-0.5 ${col.color === 'accent' ? "bg-accent text-surface border-accent shadow-[2px_2px_0px_0px_theme('colors.primary')]" : col.isArchived ? "bg-transparent border-primary text-primary" : "bg-surface border-primary shadow-brutal text-primary shadow-color-primary"}`}>
+                                            {colApps.length}
+                                        </span>
+                                    </div>
+                                    <div className="flex-1 overflow-y-auto pr-4 pb-12 flex flex-col gap-5 custom-scrollbar">
+                                        {colApps.map(app => (
+                                            <div 
+                                                key={app.id}
+                                                draggable
+                                                onDragStart={(e) => handleDragStart(e, app.id)}
+                                                className={`bg-surface relative group transition-all cursor-move ${col.isArchived ? 'opacity-70 border border-primary border-dashed p-5 hover:opacity-100 hover:bg-surface/80' : col.color === 'accent' ? 'border-2 border-accent p-5 shadow-[4px_4px_0px_0px_theme("colors.accent")] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_theme("colors.accent")]' : 'border border-primary p-5 shadow-brutal shadow-color-primary hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--tw-shadow-color)]'}`}
+                                            >
+                                                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 z-20">
+                                                    <button onClick={() => { setEditingApp(app); setIsModalOpen(true); }} className="p-1 hover:bg-background rounded">
+                                                        <span className="material-symbols-outlined text-[16px]">edit</span>
+                                                    </button>
+                                                    <button onClick={() => handleDelete(app.id)} className="p-1 hover:bg-background rounded text-accent">
+                                                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                                                    </button>
+                                                </div>
+                                                <div className="flex justify-between items-start mb-3 relative z-10">
+                                                    <h3 className={`font-bold font-heading text-xl ${col.isArchived ? 'line-through decoration-1 text-primary/70' : col.color === 'accent' ? 'text-accent' : 'group-hover:text-accent transition-colors'}`}>
+                                                        {app.company}
+                                                    </h3>
+                                                    <div className={`w-8 h-8 border overflow-hidden shrink-0 flex items-center justify-center ${col.isArchived ? 'border-transparent bg-transparent text-primary/50' : 'border-primary bg-primary text-surface'}`}>
+                                                        <span className={`material-symbols-outlined text-[18px]`} style={{fontVariationSettings: "'FILL' 1"}}>{app.icon || 'work'}</span>
+                                                    </div>
+                                                </div>
+                                                <p className={`text-base mb-6 leading-relaxed font-body relative z-10 ${col.isArchived ? 'opacity-60' : ''}`}>
+                                                    {app.role} {app.location && `• ${app.location}`}
+                                                </p>
+                                                <div className="flex items-center justify-between mt-auto pt-4 border-t border-primary/20 relative z-10">
+                                                    <span className={`text-[11px] font-mono uppercase text-muted flex items-center gap-1 ${col.isArchived ? 'opacity-0' : ''}`}>
+                                                        {app.date && <><span className="material-symbols-outlined text-[14px]">calendar_today</span> {app.date}</>}
+                                                    </span>
+                                                    <span className={`text-[11px] font-mono uppercase tracking-wider px-2.5 py-1 border ${col.isArchived ? 'border-primary/20 text-primary/50' : col.color === 'accent' ? 'bg-accent/10 text-accent font-bold border-accent/30' : 'bg-background border-primary/30 text-primary'}`}>
+                                                        {app.tag}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </main>
+
+                    {isModalOpen && (
+                        <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                            <div className="bg-surface border border-primary shadow-brutal shadow-color-primary p-6 w-full max-w-md">
+                                <h2 className="text-2xl font-heading font-bold text-primary mb-6">
+                                    {editingApp ? 'Edit Application' : 'Add Application'}
+                                </h2>
+                                <form onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const formData = new FormData(e.target);
+                                    handleSave({
+                                        id: editingApp?.id,
+                                        company: formData.get('company'),
+                                        role: formData.get('role'),
+                                        location: formData.get('location'),
+                                        status: formData.get('status'),
+                                        date: formData.get('date'),
+                                        tag: formData.get('tag'),
+                                        icon: editingApp?.icon || 'work'
+                                    });
+                                }} className="flex flex-col gap-4 font-body">
+                                    <div>
+                                        <label className="block font-mono text-xs text-muted mb-1 uppercase">Company</label>
+                                        <input required name="company" defaultValue={editingApp?.company} className="w-full border border-primary p-2 bg-background focus:outline-none focus:ring-1 focus:ring-primary" />
+                                    </div>
+                                    <div>
+                                        <label className="block font-mono text-xs text-muted mb-1 uppercase">Role</label>
+                                        <input required name="role" defaultValue={editingApp?.role} className="w-full border border-primary p-2 bg-background focus:outline-none focus:ring-1 focus:ring-primary" />
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <div className="flex-1">
+                                            <label className="block font-mono text-xs text-muted mb-1 uppercase">Location</label>
+                                            <input name="location" defaultValue={editingApp?.location} className="w-full border border-primary p-2 bg-background focus:outline-none focus:ring-1 focus:ring-primary" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <label className="block font-mono text-xs text-muted mb-1 uppercase">Date</label>
+                                            <input name="date" defaultValue={editingApp?.date} placeholder="e.g. Apr 20" className="w-full border border-primary p-2 bg-background focus:outline-none focus:ring-1 focus:ring-primary" />
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <div className="flex-1">
+                                            <label className="block font-mono text-xs text-muted mb-1 uppercase">Status</label>
+                                            <select name="status" defaultValue={editingApp?.status || 'Exploring'} className="w-full border border-primary p-2 bg-background focus:outline-none focus:ring-1 focus:ring-primary">
+                                                <option value="Exploring">Targeting</option>
+                                                <option value="Interviewing">Interviewing</option>
+                                                <option value="Archived">Archived</option>
+                                            </select>
+                                        </div>
+                                        <div className="flex-1">
+                                            <label className="block font-mono text-xs text-muted mb-1 uppercase">Tag</label>
+                                            <input name="tag" defaultValue={editingApp?.tag} placeholder="e.g. Drafting" className="w-full border border-primary p-2 bg-background focus:outline-none focus:ring-1 focus:ring-primary" />
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-primary/20">
+                                        <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 font-mono text-sm border border-transparent hover:border-primary transition-colors">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" className="px-4 py-2 font-mono text-sm bg-primary text-surface shadow-brutal shadow-color-primary hover:shadow-[6px_6px_0px_0px_var(--tw-shadow-color)] hover:-translate-y-0.5 transition-all">
+                                            Save
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const RadarChart = ({ idealSkills, userSkills }) => {
+            const axes = [
+                { dx: 0, dy: -45, label: 'Tech' },
+                { dx: 45, dy: -25, label: 'Product' },
+                { dx: 45, dy: 25, label: 'Comm' },
+                { dx: 0, dy: 45, label: 'Autonomy' },
+                { dx: -45, dy: 25, label: 'Data' },
+                { dx: -45, dy: -25, label: 'Design' }
+            ];
+
+            const getPoints = (skillsObj) => {
+                const keys = ['tech', 'prod', 'comm', 'auto', 'data', 'design'];
+                return axes.map((axis, i) => {
+                    const val = skillsObj[keys[i]] || 0;
+                    const x = 50 + (axis.dx * val / 10);
+                    const y = 50 + (axis.dy * val / 10);
+                    return `${x},${y}`;
+                }).join(' ');
+            };
+
+            return (
+                <svg className="w-full h-full opacity-80 overflow-visible" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <polygon fill="none" points="50,5 95,25 95,75 50,95 5,75 5,25" stroke="#9E9C98" strokeWidth="1"></polygon>
+                    <polygon fill="none" points="50,20 80,35 80,65 50,80 20,65 20,35" stroke="#9E9C98" strokeDasharray="2,2" strokeWidth="1"></polygon>
+                    <line stroke="#9E9C98" strokeWidth="1" x1="50" y1="50" x2="50" y2="5"></line>
+                    <line stroke="#9E9C98" strokeWidth="1" x1="50" y1="50" x2="95" y2="25"></line>
+                    <line stroke="#9E9C98" strokeWidth="1" x1="50" y1="50" x2="95" y2="75"></line>
+                    <line stroke="#9E9C98" strokeWidth="1" x1="50" y1="50" x2="50" y2="95"></line>
+                    <line stroke="#9E9C98" strokeWidth="1" x1="50" y1="50" x2="5" y2="75"></line>
+                    <line stroke="#9E9C98" strokeWidth="1" x1="50" y1="50" x2="5" y2="25"></line>
+                    
+                    <text x="50" y="2" textAnchor="middle" fill="#1C1B1A" fontSize="7" fontFamily="monospace" fontWeight="bold">TECH</text>
+                    <text x="98" y="27" textAnchor="start" fill="#1C1B1A" fontSize="7" fontFamily="monospace" fontWeight="bold">PROD</text>
+                    <text x="98" y="77" textAnchor="start" fill="#1C1B1A" fontSize="7" fontFamily="monospace" fontWeight="bold">COMM</text>
+                    <text x="50" y="103" textAnchor="middle" fill="#1C1B1A" fontSize="7" fontFamily="monospace" fontWeight="bold">AUTO</text>
+                    <text x="2" y="77" textAnchor="end" fill="#1C1B1A" fontSize="7" fontFamily="monospace" fontWeight="bold">DATA</text>
+                    <text x="2" y="27" textAnchor="end" fill="#1C1B1A" fontSize="7" fontFamily="monospace" fontWeight="bold">DESIGN</text>
+
+                    <polygon fill="none" points={getPoints(idealSkills)} stroke="#DA4126" strokeWidth="1.5" strokeDasharray="2,2"></polygon>
+                    <polygon fill="#1C1B1A" fillOpacity="0.2" points={getPoints(userSkills)} stroke="#1C1B1A" strokeWidth="1.5"></polygon>
+                </svg>
+            );
+        };
+
+        const PathExplorer = ({ setActiveView, setActiveTrackId }) => {
+            const currentRolesProfiles = {
+                'None': { tech: 0, prod: 0, comm: 0, auto: 0, data: 0, design: 0 },
+                'Support Specialist': { tech: 2, prod: 6, comm: 9, auto: 4, data: 3, design: 2 },
+                'Software Engineer': { tech: 9, prod: 4, comm: 5, auto: 6, data: 5, design: 2 },
+                'Product Designer': { tech: 3, prod: 7, comm: 6, auto: 6, data: 2, design: 9 }
+            };
+            
+            const [currentRole, setCurrentRole] = useState('None');
+            const [userSkills, setUserSkills] = useState(currentRolesProfiles['None']);
+
+            const handleRoleChange = (e) => {
+                const role = e.target.value;
+                setCurrentRole(role);
+                setUserSkills(currentRolesProfiles[role] || currentRolesProfiles['None']);
+                setQuizResult(null);
+            };
+
+            const handleSkillChange = (skill, val) => {
+                setUserSkills(prev => ({...prev, [skill]: parseInt(val)}));
+                setCurrentRole('Custom');
+                setQuizResult(null);
+            };
+
+            const [quizActive, setQuizActive] = useState(false);
+            const [quizStep, setQuizStep] = useState(0);
+            const [quizResult, setQuizResult] = useState(null); 
+            const [quizScores, setQuizScores] = useState({ product: 0, tech: 0, data: 0 });
+
+            const questions = [
+                {
+                    q: "What excites you more in your day-to-day?",
+                    opts: [
+                        { text: "Building the thing from scratch", profile: { tech: 3 } },
+                        { text: "Deciding what actually needs to be built", profile: { product: 3 } },
+                        { text: "Measuring if the thing worked", profile: { data: 3 } }
+                    ]
+                },
+                {
+                    q: "How do you prefer to work?",
+                    opts: [
+                        { text: "Heads down, deeply focused for hours", profile: { tech: 2, data: 1 } },
+                        { text: "Highly collaborative, lots of meetings & alignment", profile: { product: 3 } },
+                        { text: "Exploring patterns alone, presenting later", profile: { data: 3 } }
+                    ]
+                },
+                {
+                    q: "Which risk profile suits you best?",
+                    opts: [
+                        { text: "High risk, high reward (Foundational / AI)", profile: { tech: 2, product: 1 } },
+                        { text: "Balanced, systemic impact (Core Product)", profile: { product: 2 } },
+                        { text: "Stable, specialized expertise (Data / DevRel)", profile: { data: 2, tech: 1 } }
+                    ]
+                }
+            ];
+
+            const answerQuiz = (profileMods) => {
+                const newScores = { ...quizScores };
+                if (profileMods.tech) newScores.tech += profileMods.tech;
+                if (profileMods.product) newScores.product += profileMods.product;
+                if (profileMods.data) newScores.data += profileMods.data;
+                setQuizScores(newScores);
+
+                if (quizStep < questions.length - 1) {
+                    setQuizStep(quizStep + 1);
+                } else {
+                    let maxScore = -1;
+                    let resultCategory = 'product';
+                    ['product', 'tech', 'data'].forEach(cat => {
+                        if (newScores[cat] > maxScore) {
+                            maxScore = newScores[cat];
+                            resultCategory = cat;
+                        }
+                    });
+                    setQuizResult(resultCategory);
+                    setQuizActive(false);
+                    
+                    if (resultCategory === 'product') setUserSkills({ tech: 3, prod: 8, comm: 8, auto: 6, data: 4, design: 5 });
+                    if (resultCategory === 'tech') setUserSkills({ tech: 8, prod: 4, comm: 4, auto: 7, data: 5, design: 2 });
+                    if (resultCategory === 'data') setUserSkills({ tech: 5, prod: 4, comm: 5, auto: 7, data: 8, design: 2 });
+                    setCurrentRole('Quiz Result');
+                }
+            };
+
+            const [selectedRole, setSelectedRole] = useState(null);
+            const roleDetails = {
+                'Product Specialist': { desc: 'Acts as the bridge between support and product, analyzing customer feedback to inform roadmap.', day: 'Reviewing Zendesk tickets, finding bugs, writing feature requests, talking to early adopters.', comp: '$80k - $120k', tech: 'SQL, Jira, Zendesk, Metabase', trackId: 'product-analyst' },
+                'Associate Product Manager': { desc: 'Entry-level PM role. Rotational program to build foundational product skills.', day: 'Writing specs, analyzing AB test results, unblocking engineers, shadowing user interviews.', comp: '$90k - $130k', tech: 'Jira, Figma, Amplitude, Linear', trackId: 'product-analyst' },
+                'AI Product Manager': { desc: 'Leads development of LLM-powered features. Highly technical and experimental.', day: 'Running evals, reading API docs, testing prompts, aligning engineering with customer needs.', comp: '$140k - $220k', tech: 'OpenAI API, Python, LLM Evals', trackId: 'ai-product' },
+                'Product Engineer': { desc: 'Full-stack engineer who owns the entire feature lifecycle from design to deployment.', day: 'Writing React components, designing DB schemas, reviewing analytics, shipping code.', comp: '$130k - $200k', tech: 'React, Next.js, Tailwind, TypeScript', trackId: 'product-engineer' },
+                'Design Engineer': { desc: 'Hybrid role connecting design systems with frontend implementation. Obsessed with UX polish.', day: 'Prototyping in code, building component libraries, animating interfaces.', comp: '$120k - $180k', tech: 'React, CSS/Tailwind, Framer Motion, Figma', trackId: 'product-engineer' },
+                'Prompt Engineer': { desc: 'Focuses on designing and optimizing LLM prompts to produce reliable outputs.', day: 'Testing system prompts, evaluating hallucination rates, building test sets.', comp: '$100k - $160k', tech: 'OpenAI API, Anthropic Console, Python', trackId: 'ai-product' },
+                'Product Analyst': { desc: 'Uses data to uncover insights about user behavior and product usage.', day: 'Writing complex SQL queries, building dashboards, designing A/B tests.', comp: '$90k - $140k', tech: 'SQL, Python, Looker, Tableau', trackId: 'product-analyst' },
+                'Developer Advocate': { desc: 'Influence product through content, sample apps, docs, and community.', day: 'Building sample apps, writing tutorials, speaking at conferences.', comp: '$110k - $180k', tech: 'Varies by tool, Blogging, OSS', trackId: 'devrel' },
+                'Tech Writer': { desc: 'Creates clear, concise documentation for technical products and APIs.', day: 'Testing APIs, writing guides, interviewing engineers.', comp: '$90k - $130k', tech: 'Markdown, Git, Postman, Readme', trackId: 'devrel' }
+            };
+
+            const idealProfiles = {
+                product: { tech: 4, prod: 9, comm: 9, auto: 7, data: 6, design: 6 },
+                tech: { tech: 9, prod: 6, comm: 4, auto: 8, data: 6, design: 5 },
+                data: { tech: 6, prod: 5, comm: 6, auto: 7, data: 9, design: 4 }
+            };
+
+            const getGapStr = (user, ideal) => {
+                let gaps = [];
+                if (ideal.tech - user.tech > 2) gaps.push('+Tech');
+                if (ideal.prod - user.prod > 2) gaps.push('+Prod');
+                if (ideal.comm - user.comm > 2) gaps.push('+Comm');
+                if (ideal.data - user.data > 2) gaps.push('+Data');
+                if (gaps.length === 0) return 'Ready to transition!';
+                return `Gap: ${gaps.join(', ')}`;
+            };
+
+            const pathColumns = [
+                {
+                    id: 'product',
+                    title: 'Product Roles',
+                    ideal: idealProfiles.product,
+                    roles: ['Product Specialist', 'Associate Product Manager', 'AI Product Manager'],
+                    cons: ['High cross-functional load'],
+                    exploreTitle: 'Explore Product',
+                    exploreTrackId: 'product-analyst' 
+                },
+                {
+                    id: 'tech',
+                    title: 'Technical & AI',
+                    ideal: idealProfiles.tech,
+                    roles: ['Product Engineer', 'Design Engineer', 'Prompt Engineer'],
+                    cons: ['High technical barrier'],
+                    exploreTitle: 'Explore Technical',
+                    exploreTrackId: 'product-engineer'
+                },
+                {
+                    id: 'data',
+                    title: 'Data & DevRel',
+                    ideal: idealProfiles.data,
+                    roles: ['Product Analyst', 'Developer Advocate', 'Tech Writer'],
+                    cons: ['High public visibility'],
+                    exploreTitle: 'Explore Data & DevRel',
+                    exploreTrackId: 'devrel' 
+                }
+            ];
+
+            return (
+                <div className="flex-1 flex flex-col overflow-hidden bg-background">
+                    <header className="border-b border-primary bg-surface shrink-0 flex flex-col px-8 py-5 z-10 sticky top-0 gap-5">
+                        <div className="flex items-center justify-between">
+                            <h1 className="text-3xl font-heading font-bold tracking-tight text-primary">Path Explorer</h1>
+                            <button onClick={() => { setQuizActive(true); setQuizStep(0); setQuizScores({product:0, tech:0, data:0}); }} className="bg-primary text-surface px-4 py-2 font-mono text-sm shadow-brutal hover:shadow-[6px_6px_0px_0px_var(--tw-shadow-color)] hover:-translate-y-0.5 transition-all shadow-color-primary flex items-center gap-2">
+                                <span className="material-symbols-outlined text-[18px]">psychology_alt</span>
+                                Match Me Quiz
+                            </button>
+                        </div>
+                        
+                        <div className="flex items-center gap-6 border-t border-primary/20 pt-4">
+                            <div className="flex items-center gap-3">
+                                <span className="font-mono text-xs uppercase text-muted font-bold tracking-wider">Current Role:</span>
+                                <select value={currentRole} onChange={handleRoleChange} className="border border-primary bg-background px-3 py-1.5 font-mono text-sm focus:outline-none">
+                                    {Object.keys(currentRolesProfiles).map(r => <option key={r} value={r}>{r}</option>)}
+                                    <option value="Custom">Custom / Quiz Result</option>
+                                </select>
+                            </div>
+                            {currentRole === 'Custom' || currentRole === 'Quiz Result' || currentRole !== 'None' ? (
+                                <div className="flex gap-4 flex-1 items-center justify-end font-mono text-xs">
+                                    {['tech', 'prod', 'comm', 'auto', 'data', 'design'].map(sk => (
+                                        <div key={sk} className="flex flex-col gap-1 items-center w-16">
+                                            <label className="uppercase text-muted text-[10px]">{sk}</label>
+                                            <input type="range" min="0" max="10" value={userSkills[sk]} onChange={(e) => handleSkillChange(sk, e.target.value)} className="w-full accent-primary" />
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="flex-1 text-right font-mono text-xs text-muted pt-1">
+                                    Select a role to see the skill gap analysis in the columns below.
+                                </div>
+                            )}
+                        </div>
+                    </header>
+
+                    {quizActive && (
+                        <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                            <div className="bg-surface border border-primary shadow-brutal shadow-color-primary p-8 w-full max-w-lg">
+                                <div className="flex justify-between items-start mb-6">
+                                    <h2 className="text-2xl font-heading font-bold text-primary">Match Me Assessment</h2>
+                                    <span className="font-mono text-sm text-muted">Step {quizStep + 1} / {questions.length}</span>
+                                </div>
+                                <p className="font-body text-lg mb-8">{questions[quizStep].q}</p>
+                                <div className="flex flex-col gap-3">
+                                    {questions[quizStep].opts.map((opt, i) => (
+                                        <button key={i} onClick={() => answerQuiz(opt.profile)} className="text-left font-body p-4 border border-primary hover:bg-background transition-colors flex items-center justify-between group">
+                                            <span>{opt.text}</span>
+                                            <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="mt-8 flex justify-center">
+                                     <button onClick={() => setQuizActive(false)} className="text-xs font-mono uppercase text-muted hover:text-primary transition-colors">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
+                    <main className="flex-1 flex overflow-y-auto custom-scrollbar">
+                        {pathColumns.map(col => {
+                            const isDimmed = quizResult && quizResult !== col.id;
+                            return (
+                                <section key={col.id} className={`flex-1 flex flex-col h-full border-r border-primary pt-10 pb-12 px-8 xl:px-12 relative group transition-all duration-300 hover:bg-surface ${isDimmed ? 'opacity-30 grayscale hover:opacity-100 hover:grayscale-0' : 'opacity-100'}`}>
+                                    <div className="flex-grow flex flex-col items-center relative z-10">
+                                        <h2 className="text-[28px] font-heading font-semibold mb-8 text-center text-primary">{col.title}</h2>
+                                        
+                                        <div className="w-full max-w-[280px] mb-8">
+                                            <ul className="space-y-3 font-mono text-[13px] text-text">
+                                                {col.roles.map(r => (
+                                                    <li key={r} onClick={() => setSelectedRole(r)} className="flex items-start gap-3 cursor-pointer group/role hover:text-accent transition-colors">
+                                                        <span className="material-symbols-outlined text-accent text-lg">arrow_forward</span>
+                                                        <span className="leading-relaxed border-b border-transparent group-hover/role:border-accent">{r}</span>
+                                                    </li>
+                                                ))}
+                                                {col.cons.map(c => (
+                                                    <li key={c} className="flex items-start gap-3 text-muted mt-4 pt-4 border-t border-primary/10">
+                                                        <span className="material-symbols-outlined text-lg">close</span>
+                                                        <span className="leading-relaxed">{c}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        
+                                        <div className="w-full max-w-[200px] aspect-square relative mt-auto flex flex-col items-center justify-center">
+                                            <RadarChart idealSkills={col.ideal} userSkills={userSkills} />
+                                            <div className="absolute -bottom-8 font-mono text-[10px] text-accent uppercase font-bold tracking-widest text-center w-full">
+                                                {currentRole !== 'None' ? getGapStr(userSkills, col.ideal) : 'Skill Profile'}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="w-full flex justify-center mt-12 relative z-10">
+                                        <button 
+                                            onClick={() => { setActiveTrackId(col.exploreTrackId); setActiveView('journey'); }}
+                                            className="w-full max-w-[280px] py-4 px-6 border border-primary bg-transparent text-primary font-mono text-[14px] uppercase tracking-wider transition-colors duration-200 hover:bg-primary hover:text-surface"
+                                        >
+                                            {col.exploreTitle}
+                                        </button>
+                                    </div>
+                                </section>
+                            );
+                        })}
+                    </main>
+
+                    {/* Side Drawer for Role Details */}
+                    <div className={`fixed inset-0 bg-primary/40 backdrop-blur-sm z-40 transition-opacity duration-300 ${selectedRole ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setSelectedRole(null)}></div>
+                    <div className={`fixed top-0 right-0 h-full w-full max-w-[480px] bg-background border-l border-primary z-50 transform transition-transform duration-300 shadow-brutal shadow-color-primary flex flex-col ${selectedRole ? 'translate-x-0' : 'translate-x-full'}`}>
+                        {selectedRole && roleDetails[selectedRole] ? (
+                            <>
+                                <div className="h-20 border-b border-primary flex items-center justify-between px-8 bg-surface shrink-0">
+                                    <h2 className="text-2xl font-heading font-bold text-primary">{selectedRole}</h2>
+                                    <button onClick={() => setSelectedRole(null)} className="w-8 h-8 flex items-center justify-center hover:bg-background border border-transparent hover:border-primary transition-colors">
+                                        <span className="material-symbols-outlined">close</span>
+                                    </button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-8 custom-scrollbar">
+                                    <section className="bg-surface border border-primary p-6 shadow-brutal shadow-color-primary">
+                                        <h3 className="font-mono text-sm uppercase tracking-widest text-muted mb-4">Overview</h3>
+                                        <p className="font-body text-base leading-relaxed">{roleDetails[selectedRole].desc}</p>
+                                    </section>
+                                    <section className="bg-surface border border-primary p-6 shadow-brutal shadow-color-primary">
+                                        <h3 className="font-mono text-sm uppercase tracking-widest text-muted mb-4">Day to Day</h3>
+                                        <p className="font-body text-base leading-relaxed">{roleDetails[selectedRole].day}</p>
+                                    </section>
+                                    <section className="bg-surface border border-primary p-6 shadow-brutal shadow-color-primary">
+                                        <h3 className="font-mono text-sm uppercase tracking-widest text-muted mb-4">Key Tools / Tech</h3>
+                                        <div className="font-mono text-sm text-primary p-3 bg-background border border-primary/20">
+                                            {roleDetails[selectedRole].tech}
+                                        </div>
+                                    </section>
+                                    <section className="flex items-center justify-between p-6 border-t border-primary/20 mt-auto">
+                                        <div>
+                                            <h3 className="font-mono text-xs uppercase tracking-widest text-muted mb-1">Target Comp</h3>
+                                            <div className="font-mono text-base font-bold text-accent">{roleDetails[selectedRole].comp}</div>
+                                        </div>
+                                        <button onClick={() => { setActiveTrackId(roleDetails[selectedRole].trackId); setActiveView('journey'); setSelectedRole(null); }} className="px-6 py-3 bg-primary text-surface font-mono text-sm shadow-brutal shadow-color-primary hover:-translate-y-0.5 transition-transform">
+                                            Start Track
+                                        </button>
+                                    </section>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="p-8"><p className="font-mono text-sm">Role details not found.</p></div>
+                        )}
+                    </div>
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
