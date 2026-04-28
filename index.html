@@ -231,6 +231,7 @@
             const [activeView, setActiveView] = useState('path_explorer'); // Default to Path Explorer for testing
             const [activeTrackId, setActiveTrackId] = useState(tracks[0].id);
             const activeTrack = tracks.find(t => t.id === activeTrackId);
+            const [isChecklistOpen, setIsChecklistOpen] = useState(false);
 
             return (
                 <div className="flex w-full h-full">
@@ -239,6 +240,7 @@
                         setActiveView={setActiveView}
                         activeTrackId={activeTrackId} 
                         setActiveTrackId={setActiveTrackId} 
+                        setIsChecklistOpen={setIsChecklistOpen}
                     />
                     {activeView === 'journey' && (
                         <main className="flex-1 flex overflow-hidden">
@@ -248,11 +250,12 @@
                     )}
                     {activeView === 'app_hub' && <ApplicationHub />}
                     {activeView === 'path_explorer' && <PathExplorer setActiveView={setActiveView} setActiveTrackId={setActiveTrackId} />}
+                    {isChecklistOpen && <ChecklistModal onClose={() => setIsChecklistOpen(false)} />}
                 </div>
             );
         };
 
-        const Sidebar = ({ activeView, setActiveView, activeTrackId, setActiveTrackId }) => {
+        const Sidebar = ({ activeView, setActiveView, activeTrackId, setActiveTrackId, setIsChecklistOpen }) => {
             return (
                 <div className="relative flex h-full w-64 flex-col bg-background border-r border-primary shrink-0 font-body overflow-y-auto custom-scrollbar">
                     <div className="flex h-full grow flex-col">
@@ -297,17 +300,80 @@
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-4 border-t border-primary pt-6 mt-6">
-                                        <a className="flex items-center gap-3 px-3 py-2 text-text border border-transparent hover:border-primary transition-colors" href="#">
+                                        <button onClick={() => setIsChecklistOpen(true)} className="flex items-center gap-3 px-3 py-2 text-left text-text border border-transparent hover:border-primary transition-colors">
                                             <span className="material-symbols-outlined text-[20px]">checklist</span>
                                             <span className="font-mono text-sm font-medium leading-normal tracking-tight">Pre-flight Checklist</span>
-                                        </a>
-                                        <a className="flex items-center gap-3 px-3 py-2 text-text border border-transparent hover:border-primary transition-colors" href="#">
+                                        </button>
+                                        <a href="https://www.linkedin.com/in/sibi-ranganathan-2165a5140" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2 text-text border border-transparent hover:border-primary transition-colors">
                                             <span className="material-symbols-outlined text-[20px]">mail</span>
                                             <span className="font-mono text-sm font-medium leading-normal tracking-tight">Reach Out</span>
                                         </a>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ChecklistModal = ({ onClose }) => {
+            const initialTasks = [
+                { id: 1, text: 'Update resume with outcomes over output', done: false },
+                { id: 2, text: 'Turn on "Open to Work" on LinkedIn', done: false },
+                { id: 3, text: 'Deploy at least 1 project publicly', done: false },
+                { id: 4, text: 'Clean up GitHub repositories', done: false },
+                { id: 5, text: 'Draft "Tell me about yourself" pitch', done: false }
+            ];
+            const [tasks, setTasks] = useState(() => {
+                const saved = localStorage.getItem('sibi_checklist');
+                return saved ? JSON.parse(saved) : initialTasks;
+            });
+
+            const toggleTask = (id) => {
+                const newTasks = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+                setTasks(newTasks);
+                localStorage.setItem('sibi_checklist', JSON.stringify(newTasks));
+            };
+
+            const progress = Math.round((tasks.filter(t => t.done).length / tasks.length) * 100);
+
+            return (
+                <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-surface border border-primary shadow-brutal shadow-color-primary p-8 w-full max-w-lg flex flex-col">
+                        <div className="flex justify-between items-start mb-6">
+                            <h2 className="text-2xl font-heading font-bold text-primary">Pre-flight Checklist</h2>
+                            <button onClick={onClose} className="hover:bg-background p-1 border border-transparent hover:border-primary transition-colors">
+                                <span className="material-symbols-outlined text-[20px]">close</span>
+                            </button>
+                        </div>
+                        
+                        <div className="mb-6">
+                            <div className="flex justify-between items-end mb-2">
+                                <span className="font-mono text-xs uppercase tracking-widest text-muted">Launch Readiness</span>
+                                <span className="font-mono text-sm font-bold text-accent">{progress}%</span>
+                            </div>
+                            <div className="h-2 w-full bg-background border border-primary">
+                                <div className="h-full bg-accent transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-3">
+                            {tasks.map(task => (
+                                <label key={task.id} className={`flex items-start gap-4 p-3 border cursor-pointer transition-colors ${task.done ? 'bg-background border-primary/20 text-muted' : 'border-primary hover:bg-surface shadow-[2px_2px_0px_0px_var(--tw-shadow-color)] shadow-color-primary'}`}>
+                                    <div className={`mt-0.5 w-5 h-5 flex items-center justify-center border shrink-0 ${task.done ? 'bg-primary border-primary text-surface' : 'bg-surface border-primary'}`}>
+                                        {task.done && <span className="material-symbols-outlined text-[16px]">check</span>}
+                                    </div>
+                                    <span className={`font-body text-base leading-snug ${task.done ? 'line-through decoration-1' : ''}`}>{task.text}</span>
+                                    <input type="checkbox" className="hidden" checked={task.done} onChange={() => toggleTask(task.id)} />
+                                </label>
+                            ))}
+                        </div>
+                        
+                        <div className="mt-8 flex justify-end">
+                             <button onClick={onClose} className="bg-primary text-surface px-6 py-2 font-mono text-sm shadow-brutal hover:shadow-[6px_6px_0px_0px_var(--tw-shadow-color)] hover:-translate-y-0.5 transition-all shadow-color-primary">
+                                Done
+                             </button>
                         </div>
                     </div>
                 </div>
